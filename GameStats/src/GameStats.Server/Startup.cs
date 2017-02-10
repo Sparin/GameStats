@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using GameStats.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStats.Server
 {
@@ -38,6 +40,9 @@ namespace GameStats.Server
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+            var connectionString = "\"Filename=./GameStats.Storage.db\")";
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

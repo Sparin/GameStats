@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 namespace GameStats.Server.Models
 {
     public class Server
-    {
-        public string Name { get; set; }
-        public ICollection<string> GameModes { get { return ServerGameModes.Select(x => x.GameMode.Name).ToList(); } }
+    {   
+        [JsonIgnore]
+        public ICollection<Match> Matches { get; set; }
 
-        [JsonIgnore]
-        public ICollection<ServerGameMode> ServerGameModes { get; set; }
-        [JsonIgnore]
         public string Endpoint { get; set; }
+        public ServerInfo Info { get; set; }
     }
 }

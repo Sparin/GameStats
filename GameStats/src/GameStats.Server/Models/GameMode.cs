@@ -9,11 +9,11 @@ namespace GameStats.Server.Models
     public class GameMode
     {
         [JsonIgnore]
-        public ICollection<ServerGameMode> Servers { get; set; }
+        public ICollection<ServerInfoGameMode> Servers { get; set; }
         [JsonIgnore]
         public ICollection<Match> Matches { get; set; }
 
         [JsonProperty(PropertyName = "gameMode")]
-        public string Name { get; set; }
+        public string Name { get; set; }        
     }
 }

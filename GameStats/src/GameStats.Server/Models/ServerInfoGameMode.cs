@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace GameStats.Server.Models
 {
-    public class ServerGameMode
+    //Hasn't DBSet
+    public class ServerInfoGameMode
     {
         public GameMode GameMode { get; set; }
-        public string GameModeId { get; set; }
+        public string Name { get; set; }
 
-        public Server Server { get; set; }
+        public ServerInfo Info { get; set; }
         public string Endpoint { get; set; }
     }
 }
