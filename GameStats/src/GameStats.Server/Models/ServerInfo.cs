@@ -25,10 +25,9 @@ namespace GameStats.Server.Models
         {
             get
             {
-                if (ServerInfoGameModes != null)
-                    return ServerInfoGameModes.Select(x => x.GameMode.Name).ToList();
-                else
+                if (ServerInfoGameModes == null)
                     return null;
+                return ServerInfoGameModes.Select(x => x.GameMode.Name).ToList();
             }
             set
             {

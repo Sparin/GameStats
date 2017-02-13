@@ -12,20 +12,20 @@ namespace GameStats.Server.Models
         public Server Server { get; set; }
 
         [JsonIgnore]
+        public string Endpoint { get; set; }
+
+        [JsonIgnore]
         public DateTime Timestamp { get; set; }
 
         [JsonIgnore]
         public GameMode EFGameMode { get; set; }
-
-        [JsonIgnore]
-        public int MatchId { get; set; }        
 
         [JsonProperty(Order = -2)]
         public string Map { get; set; }
         public int FragLimit { get; set; }
         public int TimeLimit { get; set; }
         public double TimeElapsed { get; set; }
-        public ICollection<Player> Scoreboard { get; set; }
+        public ICollection<ScoreboardItem> Scoreboard { get; set; }
 
         #region DB Ignored
         [JsonProperty(Order = -2)]

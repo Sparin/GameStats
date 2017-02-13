@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace GameStats.Server.Models
 {
-    public class Player
+    public class ScoreboardItem
     {
+        
         [JsonIgnore]
         public Match Match { get; set; }
-
         [JsonIgnore]
-        public int MatchId { get; set; }
-
+        public DateTime Timestamp { get; set; }
         [JsonIgnore]
-        public int PlayerId { get; set; }
+        public string Endpoint { get; set; }
+        [JsonIgnore]
+        public Player Player { get; set; }
 
         public string Name { get; set; }
         public int Frags { get; set; }

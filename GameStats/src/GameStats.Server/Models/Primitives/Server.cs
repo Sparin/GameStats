@@ -10,6 +10,8 @@ namespace GameStats.Server.Models
     {   
         [JsonIgnore]
         public ICollection<Match> Matches { get; set; }
+        [JsonIgnore]
+        public ServerStats Stats { get; set; }
 
         public string Endpoint { get; set; }
         public ServerInfo Info { get; set; }
