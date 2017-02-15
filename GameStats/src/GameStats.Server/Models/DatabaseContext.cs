@@ -15,10 +15,7 @@ namespace GameStats.Server.Models
             modelBuilder.Entity<Server>()
                 .HasMany(x => x.Matches)
                 .WithOne(x => x.Server);
-            modelBuilder.Entity<Server>()
-                .HasOne(x => x.Stats)
-                .WithOne(x => x.Server)
-                .HasForeignKey<ServerStats>(x => x.Endpoint);
+
             modelBuilder.Entity<Server>()
                 .HasOne(x => x.Info)
                 .WithOne(x => x.Server)
@@ -36,9 +33,6 @@ namespace GameStats.Server.Models
                 .WithOne(x => x.Match);
 
             modelBuilder.Entity<ScoreboardItem>().HasKey(x => new { x.Endpoint, x.Timestamp, x.Name });
-            //modelBuilder.Entity<ScoreboardItem>()
-            //    .HasOne(x => x.Player)
-            //    .WithMany(x => x.Stats.ScoreboardItems);
             modelBuilder.Entity<ScoreboardItem>()
                 .HasOne(x => x.Match)
                 .WithMany(x => x.Scoreboard);
@@ -51,27 +45,8 @@ namespace GameStats.Server.Models
             modelBuilder.Entity<ServerInfo>().Ignore(x => x.GameModes);
 
             modelBuilder.Entity<Player>().HasKey(x => x.Name);
-            modelBuilder.Entity<Player>()
-                .HasOne(x => x.Stats)
-                .WithOne(x => x.Player)
-                .HasForeignKey<PlayerStats>(x => x.Name);
 
             modelBuilder.Entity<GameMode>().HasKey(x => x.Name);
-
-            modelBuilder.Entity<PlayerStats>().HasKey(x => x.Name);
-            modelBuilder.Entity<PlayerStats>()
-                .HasOne(x => x.Player)
-                .WithOne(x => x.Stats)
-                .HasForeignKey<Player>(x => x.Name);
-            //modelBuilder.Entity<PlayerStats>()
-            //    .HasMany(x => x.ScoreboardItems)
-            //    .WithOne(x => x.Player.Stats);
-
-            modelBuilder.Entity<ServerStats>().HasKey(x => x.Endpoint);
-            modelBuilder.Entity<ServerStats>()
-                .HasOne(x => x.Server)
-                .WithOne(x => x.Stats)
-                .HasForeignKey<Server>(x => x.Endpoint);
 
             modelBuilder.Entity<ServerInfoGameMode>()
                 .HasKey(x => new { x.Name, x.Endpoint });
@@ -83,6 +58,9 @@ namespace GameStats.Server.Models
                 .HasOne(s => s.GameMode)
                 .WithMany(gm => gm.Servers)
                 .HasForeignKey(gmr => gmr.Name);
+
+            modelBuilder.Entity<Player>().Ignore(x => x.Stats);
+            modelBuilder.Entity<Server>().Ignore(x => x.Stats);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
