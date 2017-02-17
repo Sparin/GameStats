@@ -30,7 +30,7 @@ namespace GameStats.Utility.Tools
 
             Server.Models.Server result = new Server.Models.Server
             {
-                Endpoint = String.Format("{0}.{1}.{2}.{3}-{4}"),
+                Endpoint = endpoint,
                 Info = new ServerInfo
                 {
                     Endpoint = endpoint,
@@ -51,7 +51,7 @@ namespace GameStats.Utility.Tools
                 TimeLimit = randomizer.Next(100),
                 TimeElapsed = randomizer.NextDouble(),
                 Map = String.Format("MockMap-{0}", randomizer.Next(50)),
-                GameMode = _gameModes[randomizer.Next(9)],
+                GameMode = server.Info.GameModes.ToArray()[randomizer.Next(server.Info.GameModes.Count-1)],
                 Timestamp = DateTime.Now.AddMinutes(randomizer.Next(-604800, 604800)),
             };
             result.Scoreboard = CreateRandomScoreboard(result);
@@ -62,7 +62,7 @@ namespace GameStats.Utility.Tools
         {
             return new ScoreboardItem
             {
-                Name = String.Format("Mock player {0}", randomizer.Next(1000000)),
+                Name = String.Format("mock player {0}", randomizer.Next(1000000)),
                 Frags = randomizer.Next(match.FragLimit),
                 Kills = randomizer.Next(match.FragLimit),
                 Deaths = randomizer.Next(match.FragLimit)
@@ -74,7 +74,13 @@ namespace GameStats.Utility.Tools
             int count = randomizer.Next(50);
             List<ScoreboardItem> items = new List<ScoreboardItem>();
             for (; count > 0; count--)
-                items.Add(CreateRandomScoreboardItem(match));
+            {
+                ScoreboardItem item = CreateRandomScoreboardItem(match);
+                if (items.Select(x => x.Name).Contains(item.Name))
+                    count++;
+                else
+                    items.Add(item);
+            }
             return items.ToArray();
         }
     }

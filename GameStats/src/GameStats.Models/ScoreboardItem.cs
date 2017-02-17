@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace GameStats.Server.Models
 {
     public class ScoreboardItem
-    {
-        
+    {        
         [JsonIgnore]
         public Match Match { get; set; }
         [JsonIgnore]

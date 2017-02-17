@@ -8,7 +8,8 @@ namespace GameStats.Server.Models
     public class Player
     {
         public string Name { get; set; }
-        
+
+        public ICollection<ScoreboardItem> ScoreboardItems { get; set; }
         public PlayerStats Stats { get; set; }
     }
 }

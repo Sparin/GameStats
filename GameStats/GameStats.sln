@@ -18,6 +18,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GameStats.Tests", "test\Gam
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GameStats.Utility.Tools", "src\GameStats.Utility.Tools\GameStats.Utility.Tools.xproj", "{F0C8769D-4D02-4CC7-866B-46245151BBD4}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GameStats.Models", "src\GameStats.Models\GameStats.Models.xproj", "{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{F0C8769D-4D02-4CC7-866B-46245151BBD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0C8769D-4D02-4CC7-866B-46245151BBD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0C8769D-4D02-4CC7-866B-46245151BBD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +50,6 @@ Global
 		{A3CCD337-841D-4AD4-8F09-62894DE2C103} = {DA9BB6CF-CB5F-413F-A906-96D8424851DC}
 		{0212C00F-9CE8-4C63-B6CF-60D8211FCC5C} = {A25BF449-3CE4-4181-97EE-F39D59DF5B61}
 		{F0C8769D-4D02-4CC7-866B-46245151BBD4} = {DA9BB6CF-CB5F-413F-A906-96D8424851DC}
+		{73A5F50C-D4B1-4C5A-B387-D9A1C349AEE7} = {DA9BB6CF-CB5F-413F-A906-96D8424851DC}
 	EndGlobalSection
 EndGlobal

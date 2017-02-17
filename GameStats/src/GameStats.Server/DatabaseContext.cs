@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GameStats.Server.Models
 {
@@ -19,7 +20,8 @@ namespace GameStats.Server.Models
             modelBuilder.Entity<Server>()
                 .HasOne(x => x.Info)
                 .WithOne(x => x.Server)
-                .HasForeignKey<ServerInfo>(x => x.Endpoint);
+                .HasForeignKey<ServerInfo>(x => x.Endpoint)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Match>().HasKey(x => new { x.Endpoint, x.Timestamp });
             modelBuilder.Entity<Match>()
@@ -41,10 +43,13 @@ namespace GameStats.Server.Models
             modelBuilder.Entity<ServerInfo>()
                 .HasOne(x => x.Server)
                 .WithOne(x => x.Info)
-                .HasForeignKey<Server>(x => x.Endpoint);
+                .HasForeignKey<Server>(x => x.Endpoint)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ServerInfo>().Ignore(x => x.GameModes);
 
             modelBuilder.Entity<Player>().HasKey(x => x.Name);
+            modelBuilder.Entity<Player>()
+                .HasMany(x => x.ScoreboardItems);
 
             modelBuilder.Entity<GameMode>().HasKey(x => x.Name);
 
@@ -53,11 +58,13 @@ namespace GameStats.Server.Models
             modelBuilder.Entity<ServerInfoGameMode>()
                 .HasOne(gm => gm.Info)
                 .WithMany(s => s.ServerInfoGameModes)
-                .HasForeignKey(gmr => gmr.Endpoint);
+                .HasForeignKey(gmr => gmr.Endpoint)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ServerInfoGameMode>()
                 .HasOne(s => s.GameMode)
                 .WithMany(gm => gm.Servers)
-                .HasForeignKey(gmr => gmr.Name);
+                .HasForeignKey(gmr => gmr.Name)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Player>().Ignore(x => x.Stats);
             modelBuilder.Entity<Server>().Ignore(x => x.Stats);

@@ -17,7 +17,7 @@ namespace GameStats.Server.Controllers
 
         public TestController()
         {
-            context = new DatabaseContext(new Microsoft.EntityFrameworkCore.DbContextOptions<DatabaseContext>());
+            context = new DatabaseContext(new DbContextOptions<DatabaseContext>());
         }
 
         // GET: api/values
@@ -35,8 +35,8 @@ namespace GameStats.Server.Controllers
         {
             Models.Server server = context.Servers.Include(x => x.Matches)
                 .ThenInclude(x => x.Scoreboard)
-                .Single(x => x.Endpoint == "8.8.8.8");
-            server.Stats = new ServerStats() { Server = server, Endpoint="8.8.8.8" };
+                .First();
+            server.Stats = new ServerStats() { Server = server, Endpoint = "8.8.8.8" };
             ServerStats stats = server.Stats;
             return new ObjectResult(stats);
         }
@@ -50,6 +50,7 @@ namespace GameStats.Server.Controllers
                 new ScoreboardItem {Name="Bot", Kills=2, Deaths=18, Frags=2 },
                 new ScoreboardItem {Name="Kenso", Kills=1, Deaths=6, Frags=7 }
             };
+
             Match[] matches = new Match[]
             {
                 new Match {Map="DM-HelloWorld", FragLimit=20, Endpoint="8.8.8.8", GameMode="DM",
@@ -59,12 +60,12 @@ namespace GameStats.Server.Controllers
             Models.Server server = new Models.Server
             {
                 Info = new ServerInfo { Name = "MockServer", Endpoint = "8.8.8.8", GameModes = new string[] { "DM", "TDM" } },
-                //Matches = matches,
                 Endpoint = "8.8.8.8"
             };
 
             context.Servers.Add(server);
             context.SaveChanges();
+            context.Players.AddRange(items.Select(x => new Player { Name = x.Name }));
             context.Matches.AddRange(matches);
             context.SaveChanges();
 
