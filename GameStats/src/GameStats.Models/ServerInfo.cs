@@ -13,13 +13,14 @@ namespace GameStats.Server.Models
 
         [JsonIgnore]
         public Server Server { get; set; }
-
-        //TODO: Check indexes, 'cause I don't find reference to Server at DB
+        
         [JsonIgnore]
         public string Endpoint { get; set; }
+        [JsonProperty(Required = Required.Always)]
         public string Name { get; set; }
 
         #region DB Ignored
+        [JsonProperty(Required = Required.Always)]
         public ICollection<string> GameModes
         {
             get

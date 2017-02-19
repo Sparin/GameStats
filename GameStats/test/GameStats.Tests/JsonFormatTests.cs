@@ -9,6 +9,7 @@ using Xunit;
 
 namespace GameStats.Tests
 {
+    //TODO: Write tests for controllers of server
     public class JsonFormatTests
     {
         private static JsonSerializerSettings GetJsonSettings()

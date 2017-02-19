@@ -70,7 +70,6 @@ namespace GameStats.Server.Models
                 return percentSumm / count;
             }
         } 
-        //TODO: Check the algorithm
         public int MaximumMatchesPerDay
         {
             get

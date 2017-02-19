@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace GameStats.Utility.Tools.Verbs
 {
+    //TODO: Rewrite with solution of existing entities at the database while adding new entity
     public class Add
     {
         private static DatabaseContext context = new DatabaseContext(new DbContextOptions<DatabaseContext>());
@@ -28,7 +29,7 @@ namespace GameStats.Utility.Tools.Verbs
             switch (opts.Type.ToLower())
             {
                 case "match":
-                    if (opts.ServerIndex < 0)
+                    if (opts.ServerIndex >= 0)
                         AddRandomMatches(opts);
                     else
                         Console.WriteLine("-s --ServerIndex is required");
