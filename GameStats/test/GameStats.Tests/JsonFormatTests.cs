@@ -51,5 +51,16 @@ namespace GameStats.Tests
             string jsonResult = JsonConvert.SerializeObject(item, settings);
             Assert.Equal(json, jsonResult);
         }
+
+        [Fact]
+        public void ServersInfoTest()
+        {
+            var settings = GetJsonSettings();
+
+            string json = "[{\"endpoint\":\"167.42.23.32-1337\",\"info\":{\"name\":\"] My P3rfect Server [\",\"gameModes\":[\"DM\",\"TDM\"]}},{\"endpoint\":\"62.210.26.88-1337\",\"info\":{\"name\":\">> Sniper Heaven <<\",\"gameModes\":[\"DM\"]}}]";
+            Server.Models.Server[] items = JsonConvert.DeserializeObject<Server.Models.Server[]>(json);
+            string jsonResult = JsonConvert.SerializeObject(items, settings);
+            Assert.Equal(json, jsonResult);
+        }
     }
 }

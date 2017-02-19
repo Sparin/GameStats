@@ -11,6 +11,10 @@ namespace GameStats.Utility.Tools
         private static Random randomizer = new Random();
         private static string[] _gameModes = { "DM", "TDM", "FFA", "CTF", "DE", "CS", "QUS", "SAS", "FBL", "QTF" };
 
+
+        /// <summary>
+        /// Creates random server
+        /// </summary>        
         public static Server.Models.Server CreateRandomServer()
         {
             string endpoint;
@@ -42,6 +46,10 @@ namespace GameStats.Utility.Tools
             return result;
         }
 
+        /// <summary>
+        /// Creates random match for server 
+        /// </summary>
+        /// <param name="server">Server is required for relationships of entities and for gamemodes conformity</param>
         public static Match CreateRandomMatch(Server.Models.Server server)
         {
             Match result = new Match
@@ -51,13 +59,17 @@ namespace GameStats.Utility.Tools
                 TimeLimit = randomizer.Next(100),
                 TimeElapsed = randomizer.NextDouble(),
                 Map = String.Format("MockMap-{0}", randomizer.Next(50)),
-                GameMode = server.Info.GameModes.ToArray()[randomizer.Next(server.Info.GameModes.Count-1)],
-                Timestamp = DateTime.Now.AddMinutes(randomizer.Next(-604800, 604800)),
+                GameMode = server.Info.GameModes.ToArray()[randomizer.Next(server.Info.GameModes.Count - 1)],
+                Timestamp = DateTime.Now.AddSeconds(randomizer.Next(-604800, 604800)),
             };
             result.Scoreboard = CreateRandomScoreboard(result);
             return result;
         }
 
+        /// <summary>
+        /// Creates random scoreboard's item for match
+        /// </summary>
+        /// <param name="match">Match is required for FragLimit conformity</param>
         public static ScoreboardItem CreateRandomScoreboardItem(Match match)
         {
             return new ScoreboardItem
@@ -69,6 +81,10 @@ namespace GameStats.Utility.Tools
             };
         }
 
+        /// <summary>
+        /// Creates random scoreboard for match
+        /// </summary>
+        /// <param name="match">Match required for FragLimit conformity</param>
         public static ICollection<ScoreboardItem> CreateRandomScoreboard(Match match)
         {
             int count = randomizer.Next(50);
@@ -76,10 +92,14 @@ namespace GameStats.Utility.Tools
             for (; count > 0; count--)
             {
                 ScoreboardItem item = CreateRandomScoreboardItem(match);
-                if (items.Select(x => x.Name).Contains(item.Name))
-                    count++;
-                else
+                bool toAdd = true;
+                foreach (ScoreboardItem checkItem in items)
+                    if (checkItem.Name == item.Name)
+                        toAdd = false;
+                if (toAdd)
                     items.Add(item);
+                else
+                    count++;
             }
             return items.ToArray();
         }

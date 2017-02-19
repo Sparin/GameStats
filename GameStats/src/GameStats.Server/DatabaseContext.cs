@@ -72,7 +72,7 @@ namespace GameStats.Server.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=./GameStats.Storage.db");
+            optionsBuilder.UseSqlite(@"Filename=./GameStats.Storage.db");
         }
 
         public DbSet<GameMode> GameModes { get; set; }

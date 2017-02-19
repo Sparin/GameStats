@@ -27,16 +27,18 @@ namespace GameStats.Server.Controllers
             return new ObjectResult(context.Servers.Include(x => x.Info)
                 .ThenInclude(x => x.ServerInfoGameModes)
                 .ThenInclude(x => x.GameMode)
-                .Single(x => x.Endpoint == "8.8.8.8").Info);
+                .First().Info);
         }
 
-        [HttpGet("serverstats")]
-        public IActionResult GetServerStats()
+        [HttpGet("serverstats/{endpoint}")]
+        public IActionResult GetServerStats(string endpoint)
         {
             Models.Server server = context.Servers.Include(x => x.Matches)
                 .ThenInclude(x => x.Scoreboard)
-                .First();
-            server.Stats = new ServerStats() { Server = server, Endpoint = "8.8.8.8" };
+                .Where(x=>x.Endpoint == endpoint).FirstOrDefault();//First();
+            if (server == null)
+                return NotFound();
+            server.Stats = new ServerStats() { Server = server, Endpoint = server.Endpoint };
             ServerStats stats = server.Stats;
             return new ObjectResult(stats);
         }

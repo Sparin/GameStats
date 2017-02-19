@@ -1,8 +1,7 @@
 {
   "profiles": {
     "GameStats.Utility.Tools": {
-      "commandName": "Project",
-      "commandLineArgs": "add -t  match -c 14000000"
+      "commandName": "Project"
     }
   }
 }

@@ -33,7 +33,7 @@ namespace GameStats.Server.Models
         {
             get
             {
-                return TotalMatchesPlayed / Server.Matches.GroupBy(x => x.Timestamp.Date).Count();
+                return (double)TotalMatchesPlayed / Server.Matches.GroupBy(x => x.Timestamp.Date).Count();
             }
         }
         public int MaximumPopulation
@@ -46,8 +46,8 @@ namespace GameStats.Server.Models
         public double AveragePopulation
         {
             get
-            {
-                return MaximumPopulation / TotalMatchesPlayed;
+            {                
+                return (double)Server.Matches.Sum(x=>x.Scoreboard.Count) / TotalMatchesPlayed;
             }
         }
         public ICollection<string> Top5GameModes

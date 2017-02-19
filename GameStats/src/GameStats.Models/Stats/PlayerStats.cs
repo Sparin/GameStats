@@ -69,7 +69,8 @@ namespace GameStats.Server.Models
                     .Sum(x => x.ToList().FindIndex(z => z.Player == Player) / (x.Count - 1) * 100);
                 return percentSumm / count;
             }
-        } //Check the algorithm
+        } 
+        //TODO: Check the algorithm
         public int MaximumMatchesPerDay
         {
             get
@@ -84,7 +85,7 @@ namespace GameStats.Server.Models
         {
             get
             {
-                return ScoreboardItems.Select(x => x.Match).Count() / ScoreboardItems.Select(x => x.Match)
+                return ScoreboardItems.Count() / ScoreboardItems.Select(x => x.Match)
                                                                         .GroupBy(x => x.Timestamp.Date)
                                                                         .Count();
             }
