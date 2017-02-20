@@ -64,10 +64,10 @@ namespace GameStats.Server.Models
         {
             get
             {
-                int count = ScoreboardItems.Select(x => x.Match).Count();
+                int count = ScoreboardItems.Count();
                 int percentSumm = ScoreboardItems.Select(x => x.Match.Scoreboard)
-                    .Sum(x => x.ToList().FindIndex(z => z.Player == Player) / (x.Count - 1) * 100);
-                return percentSumm / count;
+                    .Sum(x =>(x.Count-1- x.ToList().FindIndex(z => z.Name.Equals(Player.Name,StringComparison.OrdinalIgnoreCase))) / (x.Count - 1) * 100);
+                return (double)percentSumm / count;
             }
         } 
         public int MaximumMatchesPerDay
@@ -84,7 +84,7 @@ namespace GameStats.Server.Models
         {
             get
             {
-                return ScoreboardItems.Count() / ScoreboardItems.Select(x => x.Match)
+                return (double)ScoreboardItems.Count() / ScoreboardItems.Select(x => x.Match)
                                                                         .GroupBy(x => x.Timestamp.Date)
                                                                         .Count();
             }
@@ -101,7 +101,7 @@ namespace GameStats.Server.Models
         public double KillToDeathRatio
         {
             get
-            { return ScoreboardItems.Sum(x => x.Kills) / ScoreboardItems.Sum(x => x.Deaths); }
+            { return (double)ScoreboardItems.Sum(x => x.Kills) / ScoreboardItems.Sum(x => x.Deaths); }
         }
     }
 }

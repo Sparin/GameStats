@@ -99,9 +99,9 @@ namespace GameStats.Server.Controllers
             match.Endpoint = endpoint;
             match.Timestamp = timestamp.ToUniversalTime();
             match.EFGameMode = context.GameModes.Find(match.GameMode) ?? new GameMode { Name = match.GameMode };
-
+            
             context.Players.AddRange(match.Scoreboard.Select(x => new Player { Name = x.Name }).
-                            Where(x => context.Players.Find(x.Name) == null));
+                            Where(x => context.Players.Where(z => z.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() == null));
             context.Matches.Add(match);
             context.SaveChanges();
 
