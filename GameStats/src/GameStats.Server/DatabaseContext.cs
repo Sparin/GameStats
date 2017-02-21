@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GameStats.Server.Models
 {
+    //TODO: Code review
+    //TODO: Make some regions
     public class DatabaseContext : DbContext
     {
         public DatabaseContext() : base() { }

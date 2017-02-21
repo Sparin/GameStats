@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using GameStats.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace GameStats.Server.Controllers
 {
     [Route("[controller]")]
     public class PlayersController : Controller
     {
-        // GET: api/values
+        // GET: players/<name>/stats
         [HttpGet("{name}/stats")]
         public IActionResult GetPlayersStats(string name)
         {

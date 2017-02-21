@@ -7,8 +7,6 @@ using GameStats.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace GameStats.Server.Controllers
 {
     [Route("[controller]")]
@@ -21,7 +19,7 @@ namespace GameStats.Server.Controllers
             context = new DatabaseContext(new DbContextOptions<DatabaseContext>());
         }
 
-        // GET: server/<endpoint>/info
+        // GET: servers/<endpoint>/info
         [HttpGet("{endpoint}/info")]
         public IActionResult GetServerInfo(string endpoint)
         {
@@ -36,7 +34,7 @@ namespace GameStats.Server.Controllers
                 return new ObjectResult(result.Info);
         }
 
-        // PUT: server/<endpoint>/info
+        // PUT: servers/<endpoint>/info
         [HttpPut("{endpoint}/info")]
         public IActionResult PutServerInfo(string endpoint, [FromBody]ServerInfo info)
         {

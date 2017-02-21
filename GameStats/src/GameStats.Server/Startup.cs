@@ -12,6 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameStats.Server
 {
+    //TODO: ConnectionString must be an external dependency
+    //TODO: Custom prefix
+    //TODO: Resolve the obsolete functions
+    //TODO: Logging 
+    //TODO: Creation database when it's not exist
     public class Startup
     {
         public Startup(IHostingEnvironment env)
