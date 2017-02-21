@@ -12,11 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameStats.Server
 {
-    //TODO: ConnectionString must be an external dependency
     //TODO: Custom prefix
     //TODO: Resolve the obsolete functions
-    //TODO: Logging 
-    //TODO: Creation database when it's not exist
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -46,7 +43,8 @@ namespace GameStats.Server
 
             services.AddMvc();
 
-            var connectionString = "\"Filename=./GameStats.Storage.db\")";
+            var connectionString = Configuration["connectionString"] ?? @"Filename=./GameStats.Storage.db";
+            DatabaseContext.ConnectionString = connectionString;
             services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
         }
 
@@ -55,10 +53,6 @@ namespace GameStats.Server
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseApplicationInsightsRequestTelemetry();
-
-            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMvc();
         }

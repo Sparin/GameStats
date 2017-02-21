@@ -11,8 +11,14 @@ namespace GameStats.Server.Models
     //TODO: Make some regions
     public class DatabaseContext : DbContext
     {
-        public DatabaseContext() : base() { }
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
+        public static string ConnectionString { get; set; }
+
+        public DatabaseContext() : base()
+        {
+            if (!Database.EnsureCreated())
+                Database.Migrate();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Server>().HasKey(x => x.Endpoint);
@@ -67,7 +73,7 @@ namespace GameStats.Server.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Filename=./GameStats.Storage.db");
+            optionsBuilder.UseSqlite(ConnectionString);
         }
 
         public DbSet<GameMode> GameModes { get; set; }
