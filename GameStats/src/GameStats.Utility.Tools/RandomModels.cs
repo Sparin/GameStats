@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace GameStats.Utility.Tools
 {
-    //TODO: Code Review
-    //TODO: Add more models
     public static class RandomModels
     {
         private static Random randomizer = new Random();
         private static string[] _gameModes = { "DM", "TDM", "FFA", "CTF", "DE", "CS", "QUS", "SAS", "FBL", "QTF" };
-
 
         /// <summary>
         /// Creates random server

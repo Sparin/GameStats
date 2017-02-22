@@ -13,7 +13,9 @@ namespace GameStats.Server.Models
         [JsonIgnore]
         public ServerStats Stats { get; set; }
 
+        [JsonProperty(Required = Required.Always)]
         public string Endpoint { get; set; }
+        [JsonProperty(Required = Required.Always)]
         public ServerInfo Info { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace GameStats.Server.Controllers
     [Route("[controller]")]
     public class ServersController : Controller
     {
-
+        
         // GET: servers/<endpoint>/info
         [HttpGet("{endpoint}/info")]
         public IActionResult GetServerInfo(string endpoint)
@@ -38,9 +38,8 @@ namespace GameStats.Server.Controllers
                 return BadRequest();
             Models.Server server = context.Servers.Include(x => x.Info).ThenInclude(x => x.ServerInfoGameModes).Where(x => x.Endpoint == endpoint).FirstOrDefault();
             if (server != null)
-            {
-                context.Remove(server); context.SaveChanges();
-            }
+                context.Remove(server); 
+            
 
             info.Endpoint = endpoint;
             List<ServerInfoGameMode> gameModes = new List<ServerInfoGameMode>();
@@ -101,7 +100,7 @@ namespace GameStats.Server.Controllers
             context.Matches.Add(match);
             context.SaveChanges();
 
-            return new ObjectResult(timestamp.ToUniversalTime());
+            return Ok();
         }
 
         // GET: servers/info
@@ -117,7 +116,7 @@ namespace GameStats.Server.Controllers
 
         // GET: servers/<endpoint>/stats
         [HttpGet("{endpoint}/stats")]
-        public IActionResult GetServers(string endpoint)
+        public IActionResult GetServerStats(string endpoint)
         {
             DatabaseContext context = new DatabaseContext();
             Models.Server server = context.Servers                
