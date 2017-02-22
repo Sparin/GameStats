@@ -12,12 +12,17 @@ namespace GameStats.Server.Controllers
     [Route("[controller]")]
     public class ServersController : Controller
     {
+        private DatabaseContext context;
+
+        public ServersController()
+        {
+            context = new DatabaseContext();
+        }
         
         // GET: servers/<endpoint>/info
         [HttpGet("{endpoint}/info")]
         public IActionResult GetServerInfo(string endpoint)
         {
-            DatabaseContext context = new DatabaseContext();
             Models.Server result = context.Servers.Include(x => x.Info)
                 .ThenInclude(x => x.ServerInfoGameModes)
                 .ThenInclude(x => x.GameMode)
@@ -33,7 +38,6 @@ namespace GameStats.Server.Controllers
         [HttpPut("{endpoint}/info")]
         public IActionResult PutServerInfo(string endpoint, [FromBody]ServerInfo info)
         {
-            DatabaseContext context = new DatabaseContext();
             if (info == null)
                 return BadRequest();
             Models.Server server = context.Servers.Include(x => x.Info).ThenInclude(x => x.ServerInfoGameModes).Where(x => x.Endpoint == endpoint).FirstOrDefault();
@@ -71,7 +75,6 @@ namespace GameStats.Server.Controllers
         [HttpGet("{endpoint}/matches/{timestamp}")]
         public IActionResult GetMatch(string endpoint, DateTime timestamp)
         {
-            DatabaseContext context = new DatabaseContext();
             Match match = context.Matches.Include(x => x.Scoreboard).Where(x => x.Timestamp == timestamp.ToUniversalTime() && x.Endpoint == endpoint).FirstOrDefault();
             if (match != null)
                 return new ObjectResult(match);
@@ -83,7 +86,6 @@ namespace GameStats.Server.Controllers
         [HttpPut("{endpoint}/matches/{timestamp}")]
         public IActionResult PutMatch(string endpoint, DateTime timestamp, [FromBody]Match match)
         {
-            DatabaseContext context = new DatabaseContext();
             if (match == null)
                 return BadRequest();
             if (context.Servers.Find(endpoint) == null)
@@ -107,7 +109,6 @@ namespace GameStats.Server.Controllers
         [HttpGet("info")]
         public IActionResult GetServers()
         {
-            DatabaseContext context = new DatabaseContext();
             return new ObjectResult(context.Servers.Select(x => x)
                 .Include(x => x.Info)
                 .ThenInclude(x => x.ServerInfoGameModes)
@@ -118,7 +119,6 @@ namespace GameStats.Server.Controllers
         [HttpGet("{endpoint}/stats")]
         public IActionResult GetServerStats(string endpoint)
         {
-            DatabaseContext context = new DatabaseContext();
             Models.Server server = context.Servers                
                 .Include(x => x.Matches)
                 .ThenInclude(x => x.Scoreboard)

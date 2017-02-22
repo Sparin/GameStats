@@ -13,16 +13,20 @@ namespace GameStats.Server.Controllers
     [Route("[controller]")]
     public class ReportsController : Controller
     {
+        DatabaseContext context;
+
+        public ReportsController()
+        {
+            context = new DatabaseContext();
+        }
+
         // GET: reports/recent-matches/<count>
         [HttpGet("recent-matches")]
         [HttpGet("recent-matches/{count}")]
         public IActionResult GetRecentMatches(int count = 50)
         {
-            using (DatabaseContext context = new DatabaseContext())
-            {
                 Match[] matches = context.Matches.Include(x => x.Scoreboard).OrderByDescending(x => x.Timestamp).Take(count).ToArray();
                 return new ObjectResult(matches);
-            }
         }
 
         // GET: reports/best-players/<count>
@@ -30,7 +34,6 @@ namespace GameStats.Server.Controllers
         [HttpGet("best-players/{count}")]
         public IActionResult GetBestPlayers(int count = 50)
         {
-            DatabaseContext context = new DatabaseContext();
             var items = context.ScoreboardItem.GroupBy(x => x.Name.ToLower())
                 .Select(x => new
                 {
@@ -56,7 +59,6 @@ namespace GameStats.Server.Controllers
         [HttpGet("popular-servers/{count}")]
         public IActionResult GetPopularServers(int count = 50)
         {
-            DatabaseContext context = new DatabaseContext();
             var items = context.Servers.Include(x => x.Matches)
                 .Include(x => x.Info)
                 .Select(x => new
