@@ -13,7 +13,7 @@ using Xunit;
 namespace GameStats.Tests
 {
     [Collection("ReportsController tests")]
-    public class ReportsControllerTests :IDisposable
+    public class ReportsControllerTests : IDisposable
     {
         public string DbPath = @".\GameStats.Storage.db";
         public ReportsController controller;
@@ -34,40 +34,27 @@ namespace GameStats.Tests
         }
 
         [Theory]
+        [InlineData(-1)]
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(25)]
         [InlineData(50)]
-        public void GET_RecentMatches_ValidArguements_OK(int count)
+        [InlineData(55)]
+        public void GET_RecentMatches_OK(int count)
         {
             Server.Models.Server server = RandomModels.CreateRandomServer();
             Assert.True(serversController.PutServerInfo(server.Endpoint, server.Info) is OkResult);
 
-            for (int i = 0; i <= count; i++)
+            for (int i = 0; i <= count + 2; i++)
             {
                 Match match = RandomModels.CreateRandomMatch(server);
                 Assert.True(serversController.PutMatch(server.Endpoint, match.Timestamp, match) is OkResult);
             }
 
             IEnumerable<Match> matches = (IEnumerable<Match>)((ObjectResult)controller.GetRecentMatches(count)).Value;
-            Assert.Equal(count, matches.Count());
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        public void GET_RecentMatches_InvalidArguements_OK(int count)
-        {
-            Server.Models.Server server = RandomModels.CreateRandomServer();
-            Assert.True(serversController.PutServerInfo(server.Endpoint, server.Info) is OkResult);
-
-            for (int i = 0; i <= 50; i++)
-            {
-                Match match = RandomModels.CreateRandomMatch(server);
-                Assert.True(serversController.PutMatch(server.Endpoint, match.Timestamp, match) is OkResult);
-            }
-
-            IEnumerable<Match> matches = (IEnumerable<Match>)((ObjectResult)controller.GetRecentMatches(count)).Value;
-            Assert.Equal(50, matches.Count());
+            if (count < 0) Assert.Equal(0, matches.Count());
+            if (count > 50) Assert.Equal(50, matches.Count());
+            if (count <= 50 && count >= 0) Assert.Equal(count, matches.Count());
         }
     }
 }

@@ -23,10 +23,10 @@ namespace GameStats.Server.Controllers
         // GET: reports/recent-matches/<count>
         [HttpGet("recent-matches")]
         [HttpGet("recent-matches/{count}")]
-        public IActionResult GetRecentMatches(int count = 50)
+        public IActionResult GetRecentMatches(int count = 5)
         {
-            if (count < 0)
-                count = 50;
+            if (count < 0) count = 0;
+            if (count > 50) count = 50;
             Match[] matches = context.Matches.Include(x => x.Scoreboard).OrderByDescending(x => x.Timestamp).Take(count).ToArray();
             return new ObjectResult(matches);
         }
@@ -34,10 +34,10 @@ namespace GameStats.Server.Controllers
         // GET: reports/best-players/<count>
         [HttpGet("best-players")]
         [HttpGet("best-players/{count}")]
-        public IActionResult GetBestPlayers(int count = 50)
+        public IActionResult GetBestPlayers(int count = 5)
         {
-            if (count < 0)
-                count = 50;
+            if (count < 0) count = 0;
+            if (count > 50) count = 50;
             var items = context.ScoreboardItem.GroupBy(x => x.Name.ToLower())
                 .Select(x => new
                 {
@@ -45,7 +45,7 @@ namespace GameStats.Server.Controllers
                     Items = x.Select(z => z),
                     Count = x.Count()
                 })
-                .Where(x => x.Count >= 10);
+                .Where(x => x.Count >= 10 && x.Items.Sum(y => y.Deaths) != 0);
 
             var result = items.Select(x => new
             {
@@ -61,10 +61,10 @@ namespace GameStats.Server.Controllers
         // GET: reports/popular-servers/<count>
         [HttpGet("popular-servers")]
         [HttpGet("popular-servers/{count}")]
-        public IActionResult GetPopularServers(int count = 50)
+        public IActionResult GetPopularServers(int count = 5)
         {
-            if (count < 0)
-                count = 50;
+            if (count < 0) count = 0;
+            if (count > 50) count = 50;
             var items = context.Servers.Include(x => x.Matches)
                 .Include(x => x.Info)
                 .Select(x => new
