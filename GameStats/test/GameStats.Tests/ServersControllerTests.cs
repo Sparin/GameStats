@@ -93,7 +93,7 @@ namespace GameStats.Tests
         public void PUT_Match_ValidInfo_Forbid()
         {
             Match match = RandomModels.CreateRandomMatch(RandomModels.CreateRandomServer());
-            Assert.True(controller.PutMatch(match.Endpoint, match.Timestamp, match) is ForbidResult);
+            Assert.True(controller.PutMatch(match.Endpoint, match.Timestamp, match) is BadRequestResult);
         }
 
         [Theory]

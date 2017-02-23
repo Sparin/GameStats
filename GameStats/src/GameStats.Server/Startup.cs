@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameStats.Server
 {
-    //TODO: Custom prefix
     public class Startup
     {
         public Startup(IHostingEnvironment env)

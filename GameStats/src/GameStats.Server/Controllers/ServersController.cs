@@ -46,7 +46,7 @@ namespace GameStats.Server.Controllers
 
             info.Endpoint = endpoint;
             List<ServerInfoGameMode> gameModes = new List<ServerInfoGameMode>();
-            //Get old gamemodes
+            //Get existing gamemodes
             gameModes.AddRange(context.GameModes.Select(x => new ServerInfoGameMode
             {
                 Info = info,
@@ -72,7 +72,7 @@ namespace GameStats.Server.Controllers
         [HttpGet("{endpoint}/matches/{timestamp}")]
         public IActionResult GetMatch(string endpoint, DateTime timestamp)
         {
-            Match match = context.Matches.Include(x => x.Scoreboard).Where(x => x.Timestamp == timestamp.ToUniversalTime() && x.Endpoint == endpoint).FirstOrDefault();
+            Match match = context.Matches.Include(x => x.Scoreboard).Include(x=>x.EFGameMode).Where(x => x.Timestamp == timestamp.ToUniversalTime() && x.Endpoint == endpoint).FirstOrDefault();
             if (match != null)
                 return new ObjectResult(match);
             else
@@ -83,10 +83,8 @@ namespace GameStats.Server.Controllers
         [HttpPut("{endpoint}/matches/{timestamp}")]
         public IActionResult PutMatch(string endpoint, DateTime timestamp, [FromBody]Match match)
         {
-            if (match == null)
+            if (match == null || context.Servers.Find(endpoint) == null)
                 return BadRequest();
-            if (context.Servers.Find(endpoint) == null)
-                return Forbid();
             if (context.Matches.Where(x => x.Timestamp == timestamp.ToUniversalTime() && x.Endpoint == endpoint).FirstOrDefault() != null)
                 return StatusCode(409);
 

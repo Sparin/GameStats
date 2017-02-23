@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GameStats.Server.Models
 {
-    //TODO: Code review
-    //TODO: Make some regions
     public class DatabaseContext : DbContext
     {
         private string connectionString { get; set; }
@@ -28,7 +26,15 @@ namespace GameStats.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Primary keys
             modelBuilder.Entity<Server>().HasKey(x => x.Endpoint);
+            modelBuilder.Entity<Match>().HasKey(x => new { x.Endpoint, x.Timestamp });
+            modelBuilder.Entity<ScoreboardItem>().HasKey(x => new { x.Endpoint, x.Timestamp, x.Name });
+            modelBuilder.Entity<ServerInfo>().HasKey(x => x.Endpoint);
+            modelBuilder.Entity<GameMode>().HasKey(x => x.Name);
+            modelBuilder.Entity<Player>().HasKey(x => x.Name);
+            #endregion
+            #region Relationships
             modelBuilder.Entity<Server>()
                 .HasMany(x => x.Matches)
                 .WithOne(x => x.Server)
@@ -40,7 +46,6 @@ namespace GameStats.Server.Models
                 .HasForeignKey<ServerInfo>(x => x.Endpoint)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Match>().HasKey(x => new { x.Endpoint, x.Timestamp });
             modelBuilder.Entity<Match>()
                 .HasOne(x => x.EFGameMode)
                 .WithMany(x => x.Matches)
@@ -51,16 +56,8 @@ namespace GameStats.Server.Models
                 .HasForeignKey(x => new { x.Endpoint, x.Timestamp })
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<ScoreboardItem>().HasKey(x => new { x.Endpoint, x.Timestamp, x.Name });
-
-            modelBuilder.Entity<ServerInfo>().HasKey(x => x.Endpoint);
-            modelBuilder.Entity<ServerInfo>().Ignore(x => x.GameModes);
-
-            modelBuilder.Entity<Player>().HasKey(x => x.Name);
             modelBuilder.Entity<Player>()
                 .HasMany(x => x.ScoreboardItems);
-
-            modelBuilder.Entity<GameMode>().HasKey(x => x.Name);
 
             modelBuilder.Entity<ServerInfoGameMode>()
                 .HasKey(x => new { x.Name, x.Endpoint });
@@ -73,9 +70,17 @@ namespace GameStats.Server.Models
                 .WithMany(gm => gm.Servers)
                 .HasForeignKey(gmr => gmr.Name)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            #endregion
+            #region Ignores
+            modelBuilder.Entity<ServerInfo>().Ignore(x => x.GameModes);
+            modelBuilder.Entity<Match>().Ignore(x => x.GameMode);
             modelBuilder.Entity<Player>().Ignore(x => x.Stats);
             modelBuilder.Entity<Server>().Ignore(x => x.Stats);
+            #endregion
+            #region Types of properties
+            modelBuilder.Entity<Match>().Property(x => x.Timestamp).ForSqliteHasColumnType("NUMERIC");
+            modelBuilder.Entity<ScoreboardItem>().Property(x => x.Timestamp).ForSqliteHasColumnType("NUMERIC");
+            #endregion
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using CommandLine;
 
 namespace GameStats.Server
 {
@@ -13,7 +14,11 @@ namespace GameStats.Server
     {
         public static void Main(string[] args)
         {
+            Options options = new Options();
+            var result = Parser.Default.ParseArguments<Options>(args).WithParsed(x => options = x);
+
             var host = new WebHostBuilder()
+                .UseUrls(options.Prefixs.ToArray())
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
