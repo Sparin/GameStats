@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using GameStats.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
-    //TODO: Do some stress-test on response time
-    //TODO: Write a LocalCounters for this reports
+//TODO: Do some stress-test on response time
+//TODO: Write a LocalCounters for this reports
 namespace GameStats.Server.Controllers
 {
     [Route("[controller]")]
     public class ReportsController : Controller
     {
-        DatabaseContext context;
+        private readonly DatabaseContext context;
 
-        public ReportsController()
+        public ReportsController(DatabaseContext context)
         {
-            context = new DatabaseContext();
+            this.context = context;
         }
 
         // GET: reports/recent-matches/<count>
@@ -25,8 +25,10 @@ namespace GameStats.Server.Controllers
         [HttpGet("recent-matches/{count}")]
         public IActionResult GetRecentMatches(int count = 50)
         {
-                Match[] matches = context.Matches.Include(x => x.Scoreboard).OrderByDescending(x => x.Timestamp).Take(count).ToArray();
-                return new ObjectResult(matches);
+            if (count < 0)
+                count = 50;
+            Match[] matches = context.Matches.Include(x => x.Scoreboard).OrderByDescending(x => x.Timestamp).Take(count).ToArray();
+            return new ObjectResult(matches);
         }
 
         // GET: reports/best-players/<count>
@@ -34,6 +36,8 @@ namespace GameStats.Server.Controllers
         [HttpGet("best-players/{count}")]
         public IActionResult GetBestPlayers(int count = 50)
         {
+            if (count < 0)
+                count = 50;
             var items = context.ScoreboardItem.GroupBy(x => x.Name.ToLower())
                 .Select(x => new
                 {
@@ -59,15 +63,17 @@ namespace GameStats.Server.Controllers
         [HttpGet("popular-servers/{count}")]
         public IActionResult GetPopularServers(int count = 50)
         {
+            if (count < 0)
+                count = 50;
             var items = context.Servers.Include(x => x.Matches)
                 .Include(x => x.Info)
                 .Select(x => new
                 {
                     Endpoint = x.Endpoint,
                     Name = x.Info.Name,
-                    AverageMatchesPerDay = (double)x.Matches.Count/ x.Matches.GroupBy(z => z.Timestamp.Date).Count()
+                    AverageMatchesPerDay = (double)x.Matches.Count / x.Matches.GroupBy(z => z.Timestamp.Date).Count()
                 })
-                .OrderByDescending(x=>x.AverageMatchesPerDay);
+                .OrderByDescending(x => x.AverageMatchesPerDay);
 
             return new ObjectResult(items);
         }

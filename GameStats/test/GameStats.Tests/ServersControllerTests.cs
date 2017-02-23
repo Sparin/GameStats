@@ -13,27 +13,30 @@ using Xunit;
 
 namespace GameStats.Tests
 {
-    //TODO: Refactoring
-    public class ServersControllerTests
+    [Collection("ServersController tests")]
+    public class ServersControllerTests : IDisposable
     {
-        public const string DbPath = @".\GameStats.Storage.db";
-        public static ServersController controller;
+        public string DbPath = @".\GameStats.Storage.db";
+        public ServersController controller;
 
-        static ServersControllerTests()
+        public ServersControllerTests()
         {
-            DatabaseContext.ConnectionString = "Filename=" + DbPath;
-            controller = new ServersController();
+            DatabaseContext context = new DatabaseContext("Filename=" + DbPath);
+            controller = new ServersController(context);
+        }
+
+        public void Dispose()
+        {
+            if (File.Exists(DbPath))
+                File.Delete(DbPath);
         }
 
         #region /servers/<endpoint>/info PUT, GET
         [Fact]
         public void PUT_ServersInfo_ValidInfo_OK()
         {
-            DatabaseContext.ConnectionString = "Filename=" + DbPath;
             Server.Models.Server server = RandomModels.CreateRandomServer();
             Assert.True(controller.PutServerInfo(server.Endpoint, server.Info) is OkResult);
-
-            File.Delete(DbPath);
         }
 
         [Theory]
@@ -45,8 +48,6 @@ namespace GameStats.Tests
             Assert.ThrowsAny<JsonException>(() => { invalidInfo = JsonConvert.DeserializeObject<ServerInfo>(invalidJson); });
 
             var response = controller.PutServerInfo("testEndpoint", invalidInfo);
-
-            File.Delete(DbPath);
             Assert.True(response is BadRequestResult);
         }
 
@@ -59,8 +60,6 @@ namespace GameStats.Tests
 
             ServerInfo info = (ServerInfo)((ObjectResult)response).Value;
             Assert.Equal(server.Info.Endpoint, info.Endpoint);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
@@ -68,8 +67,6 @@ namespace GameStats.Tests
         {
             var response = controller.GetServerInfo("Not existing endpoint");
             Assert.True(response is NotFoundResult);
-
-            File.Delete(DbPath);
         }
         #endregion
         #region /servers/<endpoint>/matches/<timestamp> PUT, GET
@@ -80,8 +77,6 @@ namespace GameStats.Tests
             Assert.True(controller.PutServerInfo(server.Endpoint, server.Info) is OkResult);
             Match match = RandomModels.CreateRandomMatch(server);
             Assert.True(controller.PutMatch(match.Endpoint, match.Timestamp, match) is OkResult);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
@@ -92,8 +87,6 @@ namespace GameStats.Tests
             Match match = RandomModels.CreateRandomMatch(server);
             Assert.True(controller.PutMatch(match.Endpoint, match.Timestamp, match) is OkResult);
             Assert.True(((StatusCodeResult)controller.PutMatch(match.Endpoint, match.Timestamp, match)).StatusCode == 409);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
@@ -101,8 +94,6 @@ namespace GameStats.Tests
         {
             Match match = RandomModels.CreateRandomMatch(RandomModels.CreateRandomServer());
             Assert.True(controller.PutMatch(match.Endpoint, match.Timestamp, match) is ForbidResult);
-
-            File.Delete(DbPath);
         }
 
         [Theory]
@@ -117,8 +108,6 @@ namespace GameStats.Tests
             Match match = null;
             Assert.ThrowsAny<JsonException>(() => { match = JsonConvert.DeserializeObject<Match>(invalidJson); });
             Assert.True(controller.PutMatch(null, DateTime.Now, match) is BadRequestResult);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
@@ -132,26 +121,19 @@ namespace GameStats.Tests
 
             Match response = (Match)((ObjectResult)controller.GetMatch(match.Endpoint, match.Timestamp)).Value;
             Assert.True(response.Endpoint == match.Endpoint && response.Timestamp == match.Timestamp);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
         public void GET_Match_ValidInfo_NotFound()
         {
             Assert.True(controller.GetMatch("Not existing endpoint", DateTime.Now) is NotFoundResult);
-
-            File.Delete(DbPath);
         }
         #endregion
-        //TODO: Add test with values
         #region /servers/info GET
         [Fact]
         public void GET_Servers_OK()
         {
             Assert.True(((ObjectResult)controller.GetServers()).Value is IEnumerable<Server.Models.Server>);
-
-            File.Delete(DbPath);
         }
         #endregion
         #region /servers/<endpoint>/stats GET
@@ -159,8 +141,6 @@ namespace GameStats.Tests
         public void GET_ServersStats_NotExistingServer_NotFound()
         {
             Assert.True(controller.GetServerStats("Not existing endpoint") is NotFoundResult);
-
-            File.Delete(DbPath);
         }
 
         [Fact]
@@ -175,8 +155,6 @@ namespace GameStats.Tests
                 Assert.True(controller.PutMatch(server.Endpoint, match.Timestamp, match) is OkResult);
             }
             Assert.True(((ObjectResult)controller.GetServerStats(server.Endpoint)).Value is ServerStats);
-
-            File.Delete(DbPath);
         }
         #endregion
     }

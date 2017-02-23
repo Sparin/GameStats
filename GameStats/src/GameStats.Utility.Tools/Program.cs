@@ -21,7 +21,7 @@ namespace GameStats.Utility.Tools
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             Configuration = builder.Build();
-            DatabaseContext.ConnectionString = Configuration["connectionString"] ?? @"Filename .\GameStats.Storage.db";
+            Add.context = new DatabaseContext(Configuration["connectionString"] ?? @"Filename .\GameStats.Storage.db");
 
             Parser.Default.ParseArguments<AddOptions>(args)
                 .WithParsed<AddOptions>(opts => Add.AddEntityModel(opts));

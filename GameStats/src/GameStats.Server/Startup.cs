@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 namespace GameStats.Server
 {
     //TODO: Custom prefix
-    //TODO: Resolve the obsolete functions
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -44,7 +43,6 @@ namespace GameStats.Server
             services.AddMvc();
 
             var connectionString = Configuration["connectionString"] ?? @"Filename=./GameStats.Storage.db";
-            DatabaseContext.ConnectionString = connectionString;
             services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connectionString));
         }
 

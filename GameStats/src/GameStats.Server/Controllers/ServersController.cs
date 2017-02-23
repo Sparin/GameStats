@@ -12,13 +12,13 @@ namespace GameStats.Server.Controllers
     [Route("[controller]")]
     public class ServersController : Controller
     {
-        private DatabaseContext context;
+        private readonly DatabaseContext context;
 
-        public ServersController()
+        public ServersController(DatabaseContext context)
         {
-            context = new DatabaseContext();
+            this.context = context;
         }
-        
+
         // GET: servers/<endpoint>/info
         [HttpGet("{endpoint}/info")]
         public IActionResult GetServerInfo(string endpoint)
@@ -42,8 +42,7 @@ namespace GameStats.Server.Controllers
                 return BadRequest();
             Models.Server server = context.Servers.Include(x => x.Info).ThenInclude(x => x.ServerInfoGameModes).Where(x => x.Endpoint == endpoint).FirstOrDefault();
             if (server != null)
-                context.Remove(server); 
-            
+            { context.Remove(server); context.SaveChanges(); }
 
             info.Endpoint = endpoint;
             List<ServerInfoGameMode> gameModes = new List<ServerInfoGameMode>();
@@ -63,8 +62,6 @@ namespace GameStats.Server.Controllers
                 GameMode = new GameMode { Name = x },
                 Name = x
             }));
-
-            info.ServerInfoGameModes = gameModes;
 
             context.Servers.Add(new Models.Server { Endpoint = endpoint, Info = info });
             context.SaveChanges();
@@ -96,7 +93,7 @@ namespace GameStats.Server.Controllers
             match.Endpoint = endpoint;
             match.Timestamp = timestamp.ToUniversalTime();
             match.EFGameMode = context.GameModes.Find(match.GameMode) ?? new GameMode { Name = match.GameMode };
-            
+
             context.Players.AddRange(match.Scoreboard.Select(x => new Player { Name = x.Name }).
                             Where(x => context.Players.Where(z => z.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault() == null));
             context.Matches.Add(match);
@@ -119,7 +116,7 @@ namespace GameStats.Server.Controllers
         [HttpGet("{endpoint}/stats")]
         public IActionResult GetServerStats(string endpoint)
         {
-            Models.Server server = context.Servers                
+            Models.Server server = context.Servers
                 .Include(x => x.Matches)
                 .ThenInclude(x => x.Scoreboard)
                 .Where(x => x.Endpoint == endpoint)

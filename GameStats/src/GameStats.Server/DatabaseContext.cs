@@ -11,10 +11,17 @@ namespace GameStats.Server.Models
     //TODO: Make some regions
     public class DatabaseContext : DbContext
     {
-        public static string ConnectionString { get; set; }
+        private string connectionString { get; set; }
 
-        public DatabaseContext() : base()
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+            : base(options)
         {
+            if (!Database.EnsureCreated())
+                Database.Migrate();
+        }
+        public DatabaseContext(string connectionString) : base()
+        {
+            this.connectionString = connectionString;
             if (!Database.EnsureCreated())
                 Database.Migrate();
         }
@@ -73,7 +80,8 @@ namespace GameStats.Server.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(ConnectionString);
+            if (connectionString != null)
+                optionsBuilder.UseSqlite(connectionString);
         }
 
         public DbSet<GameMode> GameModes { get; set; }

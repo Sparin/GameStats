@@ -12,7 +12,7 @@ namespace GameStats.Utility.Tools.Verbs
     //TODO: Rewrite with solution of existing entities at the database while adding new entity
     public class Add
     {
-        private static DatabaseContext context = new DatabaseContext();
+        public static DatabaseContext context;
 
         /// <summary>
         /// Adds random entity model to the database 
