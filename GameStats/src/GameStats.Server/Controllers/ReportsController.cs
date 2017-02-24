@@ -27,8 +27,10 @@ namespace GameStats.Server.Controllers
         {
             if (count < 0) count = 0;
             if (count > 50) count = 50;
-            Match[] matches = context.Matches.Include(x => x.Scoreboard).OrderByDescending(x => x.Timestamp).Take(count).ToArray();
-            return new ObjectResult(matches);
+            return new ObjectResult(context.Matches.Include(x => x.Scoreboard)
+                .Include(x => x.EFGameMode)
+                .OrderByDescending(x => x.Timestamp)
+                .Take(count));
         }
 
         // GET: reports/best-players/<count>
@@ -39,25 +41,19 @@ namespace GameStats.Server.Controllers
             if (count < 0) count = 0;
             if (count > 50) count = 50;
             var items = context.ScoreboardItem.GroupBy(x => x.Name.ToLower())
-                .Select(x => new
-                {
-                    Name = x.Key,
-                    Items = x.Select(z => z),
-                    Count = x.Count()
-                })
-                .Where(x => x.Count >= 10 && x.Items.Sum(y => y.Deaths) != 0);
+                .Where(x => x.Count() >= 10 && x.Sum(y => y.Deaths) != 0);
 
             var result = items.Select(x => new
             {
-                Name = x.Name,
-                KillToDeathRatio = (double)x.Items.Sum(z => z.Kills) / x.Items.Sum(z => z.Deaths)
+                Name = x.Key,
+                KillToDeathRatio = (double)x.Sum(z => z.Kills) / x.Sum(z => z.Deaths)
             })
             .OrderByDescending(x => x.KillToDeathRatio)
             .Take(count);
 
             return new ObjectResult(result);
         }
-
+        
         // GET: reports/popular-servers/<count>
         [HttpGet("popular-servers")]
         [HttpGet("popular-servers/{count}")]

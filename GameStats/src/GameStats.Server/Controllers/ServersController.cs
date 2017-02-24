@@ -104,9 +104,8 @@ namespace GameStats.Server.Controllers
         [HttpGet("info")]
         public IActionResult GetServers()
         {
-            return new ObjectResult(context.Servers.Select(x => x)
-                .Include(x => x.Info)
-                .ThenInclude(x => x.ServerInfoGameModes)
+            return new ObjectResult(context.ServerInfo.Select(x=>x)
+                .Include(x => x.ServerInfoGameModes)
                 .ThenInclude(x => x.GameMode));
         }
 
@@ -115,8 +114,8 @@ namespace GameStats.Server.Controllers
         public IActionResult GetServerStats(string endpoint)
         {
             Models.Server server = context.Servers
-                .Include(x => x.Matches)
-                .ThenInclude(x => x.Scoreboard)
+                .Include(x => x.Matches).ThenInclude(x => x.Scoreboard)
+                .Include(x => x.Matches).ThenInclude(x => x.EFGameMode)
                 .Where(x => x.Endpoint == endpoint)
                 .FirstOrDefault();
 

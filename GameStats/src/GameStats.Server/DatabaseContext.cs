@@ -94,5 +94,6 @@ namespace GameStats.Server.Models
         public DbSet<Match> Matches { get; set; }
         public DbSet<Server> Servers { get; set; }
         public DbSet<ScoreboardItem> ScoreboardItem { get; set; }
+        public DbSet<ServerInfo> ServerInfo { get; set; }
     }
 }
